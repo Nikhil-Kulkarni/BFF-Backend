@@ -165,7 +165,7 @@ func (c *Controller) CreateTest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	json.NewEncoder(w).Encode(CreateTestResponse{testID})
+	json.NewEncoder(w).Encode(CreateTestResponse{"https://playbff.herokuapp.com/" + testID})
 }
 
 // FetchTest fetches a test - Called by web client
