@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	firebase "firebase.google.com/go"
 	"google.golang.org/api/option"
@@ -13,6 +14,12 @@ import (
 )
 
 func main() {
+	port := os.Getenv("PORT")
+
+	if port == "" {
+		log.Fatal("$PORT must be set")
+	}
+
 	client := createFirestoreClient()
 	defer client.Close()
 
@@ -20,8 +27,8 @@ func main() {
 
 	router := NewRouter(controller)
 
-	fmt.Println("listening on port 8080")
-	http.ListenAndServe(":8080", router)
+	fmt.Println("listening on port " + port)
+	http.ListenAndServe(":"+port, router)
 }
 
 func createController(client *firestore.Client) *Controller {
