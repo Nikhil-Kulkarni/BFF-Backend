@@ -35,7 +35,7 @@ func createRepository(client *firestore.Client) *Repository {
 
 func createFirestoreClient() *firestore.Client {
 	ctx := context.Background()
-	serviceAccount := option.WithCredentialsFile("/Users/nikhilkulkarni/downloads/i-have-friends-7145215c635d.json")
+	serviceAccount := option.WithCredentialsFile("credentials/i-have-friends-7145215c635d.json")
 	app, err := firebase.NewApp(ctx, nil, serviceAccount)
 	if err != nil {
 		log.Fatalln("Failed to create firebase app", err)
