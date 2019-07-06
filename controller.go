@@ -20,6 +20,12 @@ func init() {
 	rand.Seed(time.Now().UnixNano())
 }
 
+// CorsHandler cors pre-flight options handler
+func (c *Controller) CorsHandler(w http.ResponseWriter, r *http.Request) {
+	writeCorsHeaders(&w)
+	return
+}
+
 // Login creates user profile if needed and returns scores - Called by mobile client
 func (c *Controller) Login(w http.ResponseWriter, r *http.Request) {
 	var request LoginRequest
@@ -59,6 +65,7 @@ func (c *Controller) Login(w http.ResponseWriter, r *http.Request) {
 
 // SubmitScore submits a score - Called by web client
 func (c *Controller) SubmitScore(w http.ResponseWriter, r *http.Request) {
+	writeCorsHeaders(&w)
 	var request Score
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
@@ -163,6 +170,7 @@ func (c *Controller) CreateTest(w http.ResponseWriter, r *http.Request) {
 
 // FetchTest fetches a test - Called by web client
 func (c *Controller) FetchTest(w http.ResponseWriter, r *http.Request) {
+	writeCorsHeaders(&w)
 	var request FetchTestRequest
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
@@ -171,7 +179,6 @@ func (c *Controller) FetchTest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// If no test id, return invalid request
 	if request.TestID == "" {
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(Exception{"No test id"})
@@ -180,10 +187,8 @@ func (c *Controller) FetchTest(w http.ResponseWriter, r *http.Request) {
 
 	ctx := context.Background()
 
-	// Fetch test
 	test, err := c.repository.FetchTest(ctx, request)
 
-	// If failed to fetch test metadata, return invalid request
 	if err != nil {
 		fmt.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
@@ -191,7 +196,6 @@ func (c *Controller) FetchTest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Fetch questions for test
 	questions, err := c.repository.FetchQuestions(ctx, test)
 	if err != nil {
 		fmt.Println(err)
@@ -209,4 +213,10 @@ func randomID() string {
 		b[i] = letterRunes[rand.Intn(len(letterRunes))]
 	}
 	return string(b)
+}
+
+func writeCorsHeaders(w *http.ResponseWriter) {
+	(*w).Header().Set("Access-Control-Allow-Origin", "https://playbff.herokuapp.com")
+	(*w).Header().Add("Access-Control-Allow-Methods", "POST")
+	(*w).Header().Add("Access-Control-Allow-Headers", "Content-Type")
 }

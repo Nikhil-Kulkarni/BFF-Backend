@@ -58,6 +58,18 @@ func NewRouter(controller *Controller) *mux.Router {
 			"/SubmitScore",
 			controller.SubmitScore,
 		},
+		Route{
+			"FetchTestOptions",
+			"OPTIONS",
+			"/FetchTest",
+			controller.CorsHandler,
+		},
+		Route{
+			"SubmitScoreOptions",
+			"OPTIONS",
+			"/SubmitScore",
+			controller.CorsHandler,
+		},
 	}
 
 	for _, r := range routes {
