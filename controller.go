@@ -216,7 +216,7 @@ func randomID() string {
 }
 
 func writeCorsHeaders(w *http.ResponseWriter) {
-	(*w).Header().Set("Access-Control-Allow-Origin", "https://playbff.herokuapp.com")
+	(*w).Header().Set("Access-Control-Allow-Origin", "http://playbff.herokuapp.com")
 	(*w).Header().Add("Access-Control-Allow-Methods", "POST")
 	(*w).Header().Add("Access-Control-Allow-Headers", "Content-Type")
 }
